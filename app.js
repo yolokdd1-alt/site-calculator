@@ -1,9 +1,14 @@
 (() => {
   'use strict';
   const config = window.CALCULATOR_CONFIG;
+  const cleanUrl = new URL(location.href);
+  if (cleanUrl.searchParams.has('estimate')) {
+    cleanUrl.searchParams.delete('estimate');
+    history.replaceState(null, '', cleanUrl);
+  }
   const $ = (selector) => document.querySelector(selector);
   const allOptions = config.groups.flatMap(group => group.options);
-  const storageKey = 'site-estimate-v1';
+  const storageKey = 'site-estimate-v2';
   const rub = value => new Intl.NumberFormat('ru-RU', { style: 'currency', currency: config.currency, maximumFractionDigits: 0 }).format(value);
   const priced = value => typeof value === 'number' && Number.isFinite(value) && value >= 0;
   const unitPrice = value => priced(value) ? rub(value) : 'Цена уточняется';
@@ -11,16 +16,8 @@
   const defaults = () => ({ package: config.packages[0].id, quantities: {}, options: [], custom: [], comment: '' });
   let state = defaults();
   try { const saved = JSON.parse(localStorage.getItem(storageKey)); if (saved && typeof saved === 'object') state = { ...state, ...saved }; } catch {}
-  // Explicit estimate links take priority over the recipient's saved choices.
-  const presetId = new URLSearchParams(location.search).get('estimate');
-  const preset = Object.hasOwn(config.presets || {}, presetId) ? config.presets[presetId] : null;
-  if (preset) state = JSON.parse(JSON.stringify(preset.state));
   const applicable = entry => !entry.packages || entry.packages.includes(state.package);
   function sanitize() {
-    // Migrate the saved Cagana bundle once, using the currently available functions.
-    if (Array.isArray(state.options) && state.options.includes('cagana')) {
-      state.options = [...new Set([...state.options.filter(id => id !== 'cagana'), 'priceSearch', 'comparison', 'serviceDetails'])];
-    }
     if (!config.packages.some(entry => entry.id === state.package)) state.package = config.packages[0].id;
     const oldQuantities = state.quantities && typeof state.quantities === 'object' ? state.quantities : {};
     state.quantities = Object.fromEntries(config.quantities.filter(applicable).map(entry => [entry.id, Math.min(entry.max, Math.max(0, Math.trunc(Number(oldQuantities[entry.id]) || 0)))]));
@@ -88,7 +85,7 @@
   }
   function update() {
     const base = config.packages.find(entry => entry.id === state.package); const result = estimate();
-    $('#summary-title').textContent = preset ? `${preset.title} · ${base.name}` : base.name; $('#summary-scope').textContent = base.scope;
+    $('#summary-title').textContent = base.name; $('#summary-scope').textContent = base.scope;
     $('#summary-lines').replaceChildren();
     result.selected.forEach(entry => {
       const row = el('div', 'summary-line'); row.append(el('span', '', entry.name + (entry.unit ? ` · ${entry.count} ${entry.unit}` : '')), el('b', '', entry.custom ? 'Обсудим' : priced(entry.price) ? rub(entry.price * entry.count) + (entry.recurring ? ' / мес.' : '') : 'Уточним')); $('#summary-lines').append(row);
