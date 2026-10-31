@@ -11,6 +11,10 @@
   const defaults = () => ({ package: config.packages[0].id, quantities: {}, options: [], custom: [], comment: '' });
   let state = defaults();
   try { const saved = JSON.parse(localStorage.getItem(storageKey)); if (saved && typeof saved === 'object') state = { ...state, ...saved }; } catch {}
+  // Explicit estimate links take priority over the recipient's saved choices.
+  const presetId = new URLSearchParams(location.search).get('estimate');
+  const preset = Object.hasOwn(config.presets || {}, presetId) ? config.presets[presetId] : null;
+  if (preset) state = JSON.parse(JSON.stringify(preset.state));
   const applicable = entry => !entry.packages || entry.packages.includes(state.package);
   function sanitize() {
     // Migrate the saved Cagana bundle once, preserving its 15,000-ruble total.
@@ -84,7 +88,7 @@
   }
   function update() {
     const base = config.packages.find(entry => entry.id === state.package); const result = estimate();
-    $('#summary-title').textContent = base.name; $('#summary-scope').textContent = base.scope;
+    $('#summary-title').textContent = preset ? `${preset.title} · ${base.name}` : base.name; $('#summary-scope').textContent = base.scope;
     $('#summary-lines').replaceChildren();
     result.selected.forEach(entry => {
       const row = el('div', 'summary-line'); row.append(el('span', '', entry.name + (entry.unit ? ` · ${entry.count} ${entry.unit}` : '')), el('b', '', entry.custom ? 'Обсудим' : priced(entry.price) ? rub(entry.price * entry.count) + (entry.recurring ? ' / мес.' : '') : 'Уточним')); $('#summary-lines').append(row);
