@@ -1,0 +1,29 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="theme-color" content="#f5f5f2"><meta name="description" content="Соберите свой сайт: выберите пакет, объём и функции. Получите список работ и предварительный расчёт.">
+<title>Смета — конструктор сайта</title>
+<link rel="icon" href="favicon.svg" type="image/svg+xml"><link rel="stylesheet" href="style.css">
+<script src="pricing.js" defer></script><script src="app.js" defer></script>
+</head>
+<body>
+<a class="skip" href="#builder">Перейти к конструктору</a>
+<header class="header wrap"><a class="brand" href="#top" aria-label="Смета — в начало"><span class="brand-mark">с<span>·</span></span>смета<span class="brand-caption">конструктор сайта</span></a><span class="header-note"><i></i> От идеи к понятному бюджету</span></header>
+<main id="top" class="wrap">
+<section class="intro"><div><p class="eyebrow">ВАШ ПРОЕКТ, БЕЗ ЛИШНИХ СЛОЖНОСТЕЙ</p><h1>Соберите сайт.<br><span>Поймите стоимость.</span></h1><p class="intro-text">Выберите основу, добавьте нужные возможности —<br class="desktop-break"> и получите понятный список работ для обсуждения.</p></div><div class="intro-symbol" aria-hidden="true"><div class="symbol-outline"></div><span>+</span><i></i><b>всё складывается</b></div></section>
+<div class="workspace" id="builder">
+<div class="builder">
+<section class="step"><div class="step-heading"><span class="step-num">01</span><div><h2>Начнём с основы</h2><p>Один из трёх форматов под вашу задачу.</p></div></div><fieldset class="package-grid" id="packages"><legend class="sr-only">Выберите пакет сайта</legend></fieldset><div class="included"><span class="included-label">УЖЕ В КАЖДОМ ПАКЕТЕ</span><ul id="included"></ul></div></section>
+<section class="step"><div class="step-heading"><span class="step-num">02</span><div><h2>Определим объём</h2><p>Добавьте только то, что выходит за рамки основы.</p></div></div><div class="quantity-list" id="quantities"></div></section>
+<section class="step"><div class="step-heading"><span class="step-num">03</span><div><h2>Добавим возможности</h2><p>Что должен уметь ваш сайт?</p></div></div><div id="options"></div></section>
+<section class="step custom-step"><div class="step-heading"><span class="step-num">04</span><div><h2>Есть особая задача?</h2><p>Отметьте её — оценим отдельно после обсуждения.</p></div></div><div class="custom-options" id="custom"></div><label class="comment-label" for="comment">Пара слов о проекте <span>необязательно</span></label><textarea id="comment" rows="3" maxlength="1000" placeholder="Например: сайт студии, нужны портфолио и запись на услуги…"></textarea></section>
+</div>
+<aside class="summary" aria-labelledby="summary-title"><div class="summary-top"><span class="eyebrow">ВАШ ПРОЕКТ</span><span class="summary-icon" aria-hidden="true">↗</span></div><h2 id="summary-title">Лендинг</h2><p id="summary-scope" class="summary-scope"></p><div class="summary-divider"></div><div id="summary-lines"></div><div class="total-block"><span class="total-label">Разовая стоимость сайта</span><strong id="total" aria-live="polite" aria-atomic="true">Стоимость уточняется</strong><p id="monthly-total" aria-live="polite"></p><p id="total-note"></p></div><p id="custom-note" class="custom-note" hidden>Индивидуальные задачи оценим отдельно.</p><button type="button" id="copy" class="primary">Скопировать расчёт <span aria-hidden="true">↗</span></button><p class="copy-status" id="copy-status" role="status"></p><button type="button" id="reset" class="reset">Начать заново</button><p id="market-note" class="market-note"></p><details class="price-sources"><summary>О ценах</summary><p>Пакеты и дополнения — по прайсу исполнителя для небольших проектов. Сложные задачи оцениваются отдельно. Ссылки ниже — справочные ориентиры, а не действующий прайс.</p><a href="https://inreallab.ru/price/sayty" target="_blank" rel="noopener">inreallab — сайты и интеграции ↗</a><a href="https://linkodium.com/prices/" target="_blank" rel="noopener">Linkodium — страницы и наполнение ↗</a><a href="https://izzydes.ru/" target="_blank" rel="noopener">Izzydes — небольшие сайты ↗</a></details><p class="summary-footnote">Домен, хостинг, перевод и подписки внешних сервисов оплачиваются отдельно. Итоговую цену согласуем после обсуждения задачи.</p></aside>
+</div>
+<footer class="footer"><span>Сначала — понятная задача. Потом — красивый сайт.</span><span>Собрано под ваши задачи <span aria-hidden="true">↗</span></span></footer>
+</main>
+<a class="mobile-total" href="#summary-title"><span><small>Ваш расчёт</small><strong id="mobile-total">Стоимость уточняется</strong></span><span aria-hidden="true">↑</span></a>
+<dialog id="copy-dialog" aria-labelledby="copy-title"><h2 id="copy-title">Ваш расчёт</h2><p>Скопируйте текст и отправьте исполнителю.</p><textarea id="copy-text" readonly aria-label="Текст расчёта" rows="12"></textarea><button class="primary" id="close-copy" type="button">Закрыть</button></dialog>
+<noscript><p class="noscript">Для работы калькулятора включите JavaScript в браузере.</p></noscript>
+</body></html>
