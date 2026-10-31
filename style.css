@@ -8,3 +8,5 @@
 @media(min-width:761px){.summary{max-height:calc(100dvh - 48px);overflow-y:auto;scrollbar-width:thin;scrollbar-color:#606b79 transparent}}
 
 .market-note{font-size:9px;line-height:1.8;color:#b5becb;margin-top:22px}.price-sources{font-size:10px;color:#b5becb;margin-top:12px}.price-sources summary{cursor:pointer;color:#d5ed91;min-height:32px;line-height:2}.price-sources p{line-height:1.8}.price-sources a{display:block;line-height:1.8;margin-block:7px}.price-sources a:hover{color:#fff}
+
+.option:has(.required-mark){cursor:default;background:#f0f1ff;border-color:#b6bffa}.required-mark{color:#5366ed;font-size:18px;flex-shrink:0}.mobile-total strong{overflow-wrap:anywhere}

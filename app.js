@@ -22,6 +22,7 @@
     const oldQuantities = state.quantities && typeof state.quantities === 'object' ? state.quantities : {};
     state.quantities = Object.fromEntries(config.quantities.filter(applicable).map(entry => [entry.id, Math.min(entry.max, Math.max(0, Math.trunc(Number(oldQuantities[entry.id]) || 0)))]));
     state.options = allOptions.filter(entry => applicable(entry) && Array.isArray(state.options) && state.options.includes(entry.id)).map(entry => entry.id);
+    allOptions.filter(entry => entry.mandatory).forEach(entry => { if (!state.options.includes(entry.id)) state.options.push(entry.id); });
     state.options = state.options.filter(id => (allOptions.find(entry => entry.id === id).requires || []).every(required => state.options.includes(required)));
     state.custom = config.custom.filter(entry => Array.isArray(state.custom) && state.custom.includes(entry.id)).map(entry => entry.id);
     state.comment = typeof state.comment === 'string' ? state.comment.slice(0, 1000) : '';
@@ -58,7 +59,9 @@
         const label = el('label', 'option'); const input = el('input'); input.type = 'checkbox'; input.dataset.option = entry.id; input.checked = state.options.includes(entry.id);
         const copy = el('span', 'option-copy'); const title = el('span', 'row-title', entry.name); title.id = `option-${entry.id}`;
         input.setAttribute('aria-labelledby', title.id); const description = el('span', 'row-description', entry.description + (entry.requires ? ' При выборе добавляется форма заявки.' : ''));
-        copy.append(title, description); label.append(input, copy, el('span', 'option-price', unitPrice(entry.price) + (entry.recurring ? ' / мес.' : ''))); section.append(label);
+        copy.append(title, description);
+        if (entry.mandatory) label.append(el('span', 'required-mark', '✓')); else label.append(input);
+        label.append(copy, el('span', 'option-price', unitPrice(entry.price) + (entry.recurring ? ' / мес.' : ''))); section.append(label);
       }); $('#options').append(section);
     });
   }
@@ -90,8 +93,8 @@
     result.selected.forEach(entry => {
       const row = el('div', 'summary-line'); row.append(el('span', '', entry.name + (entry.unit ? ` · ${entry.count} ${entry.unit}` : '')), el('b', '', entry.custom ? 'Обсудим' : priced(entry.price) ? rub(entry.price * entry.count) + (entry.recurring ? ' / мес.' : '') : 'Уточним')); $('#summary-lines').append(row);
     });
-    $('#monthly-total').textContent = result.monthly ? `Поддержка: ${rub(result.monthly)} / мес. — отдельно` : '';
-    $('#total').textContent = result.title; $('#mobile-total').textContent = result.title; $('#total-note').textContent = result.note; $('#custom-note').hidden = !result.custom;
+    $('#monthly-total').textContent = result.monthly ? `Обязательное обслуживание: ${rub(result.monthly)} / мес.` : '';
+    $('#total').textContent = result.title; $('#mobile-total').textContent = result.title + (result.monthly ? ` + ${rub(result.monthly)}/мес.` : ''); $('#total-note').textContent = result.note; $('#custom-note').hidden = !result.custom;
     document.querySelectorAll('[data-quantity]').forEach(input => {
       const entry = config.quantities.find(item => item.id === input.dataset.quantity); input.value = state.quantities[entry.id]; const container = input.parentElement;
       container.querySelector('[data-delta="-1"]').disabled = state.quantities[entry.id] <= 0; container.querySelector('[data-delta="1"]').disabled = state.quantities[entry.id] >= entry.max;
@@ -102,7 +105,7 @@
   function exportText() {
     const base = config.packages.find(entry => entry.id === state.package); const result = estimate();
     const rows = result.selected.map(entry => `• ${entry.name}${entry.unit ? ` — ${entry.count} ${entry.unit}` : ''}: ${entry.custom ? 'индивидуальная оценка' : priced(entry.price) ? rub(entry.price * entry.count) + (entry.recurring ? ' / мес.' : '') : 'стоимость уточняется'}`);
-    return ['РАСЧЁТ САЙТА', base.scope, '', 'Выбранные работы:', ...rows, '', 'В базовый пакет входит:', ...config.included.map(text => `• ${text}`), '', `Разовая стоимость: ${result.title}`, result.monthly ? `Ежемесячная поддержка: ${rub(result.monthly)} / мес. отдельно` : '', result.note, config.pricingNote || '', result.custom ? 'Индивидуальные задачи оценим отдельно.' : '', state.comment ? `\nО проекте: ${state.comment}` : '', '\nДомен, хостинг, перевод и подписки внешних сервисов оплачиваются отдельно. Итоговую цену согласуем после обсуждения задачи.'].filter(text => text !== '').join('\n');
+    return ['РАСЧЁТ САЙТА', base.scope, '', 'Выбранные работы:', ...rows, '', 'В базовый пакет входит:', ...config.included.map(text => `• ${text}`), '', `Разовая стоимость: ${result.title}`, result.monthly ? `Обязательное обслуживание (сервер и сопровождение): ${rub(result.monthly)} / мес.` : '', result.note, config.pricingNote || '', result.custom ? 'Индивидуальные задачи оценим отдельно.' : '', state.comment ? `\nО проекте: ${state.comment}` : '', '\nАренда сервера входит в обязательные 1 500 ₽/мес. Домен, перевод и подписки внешних сервисов оплачиваются отдельно. Итоговую цену согласуем после обсуждения задачи.'].filter(text => text !== '').join('\n');
   }
   $('#packages').addEventListener('change', event => { if (event.target.name !== 'package') return; state.package = event.target.value; sanitize(); renderQuantities(); renderOptions(); update(); });
   $('#quantities').addEventListener('click', event => {
