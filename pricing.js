@@ -21,7 +21,7 @@ window.CALCULATOR_CONFIG = {
       { id: 'form', name: 'Форма заявки', description: 'Одна форма до 5 полей, отправка на почту.', price: 1500 },
       { id: 'booking', name: 'Онлайн-запись', description: 'Виджет одного готового сервиса бронирования. Подписка отдельно.', price: 3000 },
       { id: 'crm', name: 'Подключение CRM', requires: ['form'], description: 'Передача заявок одной формы в одну CRM, без настройки воронок. Требует форму заявки.', price: 5000 },
-      { id: 'telegram', name: 'Уведомления в Telegram', description: 'Уведомления о заявках из формы сайта.', requires: ['form'], price: 1500 }
+      { id: 'telegram', name: 'Уведомления о заявках в Telegram', description: 'Отправка заявок из формы сайта в ваш чат через бота. Без меню, диалогов, записи и оплаты.', requires: ['form'], price: 1500 }
     ]},
     { name: 'Возможности сайта', options: [
       { id: 'mobile', name: 'Мобильная версия', description: 'Адаптация выбранного сайта под смартфоны и планшеты.', price: 5000 },
@@ -46,6 +46,7 @@ window.CALCULATOR_CONFIG = {
     ]}
   ],
   custom: [
+    { id: 'telegramBot', name: 'Разработка Telegram-бота' },
     { id: 'account', name: 'Личный кабинет' },
     { id: 'integration', name: 'Нестандартная интеграция' },
     { id: 'migration', name: 'Перенос существующего сайта' },
