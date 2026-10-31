@@ -17,9 +17,9 @@
   if (preset) state = JSON.parse(JSON.stringify(preset.state));
   const applicable = entry => !entry.packages || entry.packages.includes(state.package);
   function sanitize() {
-    // Migrate the saved Cagana bundle once, preserving its 15,000-ruble total.
+    // Migrate the saved Cagana bundle once, using the currently available functions.
     if (Array.isArray(state.options) && state.options.includes('cagana')) {
-      state.options = [...new Set([...state.options.filter(id => id !== 'cagana'), 'priceSearch', 'comparison', 'serviceDetails', 'cityBooking'])];
+      state.options = [...new Set([...state.options.filter(id => id !== 'cagana'), 'priceSearch', 'comparison', 'serviceDetails'])];
     }
     if (!config.packages.some(entry => entry.id === state.package)) state.package = config.packages[0].id;
     const oldQuantities = state.quantities && typeof state.quantities === 'object' ? state.quantities : {};
